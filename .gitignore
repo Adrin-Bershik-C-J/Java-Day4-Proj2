@@ -1,0 +1,8 @@
+echo ".idea/
+target/
+*.iml
+*.class
+*.war
+*.log
+*.tmp
+.DS_Store"
