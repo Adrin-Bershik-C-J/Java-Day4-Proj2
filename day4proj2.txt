@@ -1,0 +1,186 @@
+Repo link: https://github.com/Adrin-Bershik-C-J/Java-Day4-Proj2
+
+Directory structure:
+└── adrin-bershik-c-j-java-day4-proj2/
+    ├── day4proj2.txt
+    ├── pom.xml
+    └── src/
+        ├── main/
+        │   └── java/
+        │       ├── com/
+        │       │   └── day4proj2/
+        │       │       └── App.java
+        │       ├── exceptions/
+        │       │   └── InvalidAgeException.java
+        │       ├── main/
+        │       │   └── Main.java
+        │       ├── models/
+        │       │   ├── Ticket.java
+        │       │   └── User.java
+        │       └── services/
+        │           └── TicketService.java
+        └── test/
+            └── java/
+                └── com/
+                    └── day4proj2/
+                        └── AppTest.java
+
+Main.java:
+package main;
+
+import java.util.Scanner;
+
+import exceptions.InvalidAgeException;
+import services.TicketService;
+
+public class Main {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        TicketService obj = new TicketService();
+
+        while (true) {
+            try {
+                System.out.println("\nEnter your choice:");
+                System.out.println("1. Book Ticket");
+                System.out.println("2. Display Tickets");
+                System.out.println("3. Exit");
+
+                int choice = sc.nextInt();
+                sc.nextLine();
+
+                switch (choice) {
+                    case 1:
+                        System.out.println("Enter name:");
+                        String name = sc.nextLine();
+
+                        System.out.println("Enter age:");
+                        int age = sc.nextInt();
+                        sc.nextLine();
+
+                        System.out.println("Enter title:");
+                        String title = sc.nextLine();
+
+                        obj.createTicket(name, age, title);
+                        break;
+
+                    case 2:
+                        obj.displayTicket();
+                        break;
+
+                    case 3:
+                        System.out.println("Exiting...");
+                        sc.close();
+                        return;
+
+                    default:
+                        System.out.println("Enter a valid choice! Else you get stuck in a loop forever 😈");
+                }
+            } catch (java.util.InputMismatchException e) {
+                System.out.println("Invalid input! Please enter a number.");
+                sc.nextLine();
+            } catch (InvalidAgeException e) {
+                System.out.println("Error occurred: " + e.getMessage());
+            } catch (Exception e) {
+                System.out.println("Unexpected error: " + e.getMessage());
+            }
+        }
+    }
+}
+
+Ticket.java
+package models;
+
+public class Ticket {
+
+    private static int counter = 1;
+    private int id;
+    private String title;
+    private User user;
+
+    public Ticket(String title, User user) {
+        this.id = counter++;
+        this.title = title;
+        this.user = user;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    @Override
+    public String toString() {
+        return "Ticket ID: " + id + ", Title: " + title + ", Booked by: " + user.getName();
+    }
+}
+
+User.java
+package models;
+
+public class User {
+
+    private String name;
+    private int age;
+
+    public User(String name, int age) {
+        this.name = name;
+        this.age = age;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public int getAge() {
+        return age;
+    }
+}
+
+TicketService.javapackage services;
+
+import java.util.*;
+
+import exceptions.InvalidAgeException;
+import models.Ticket;
+import models.User;
+
+public class TicketService {
+
+    private List<Ticket> list = new ArrayList<>();
+
+    public void createTicket(String name, int age, String title) throws InvalidAgeException {
+        if (age < 18) {
+            throw new InvalidAgeException("Insufficient age to book a ticket!\n");
+        }
+        User obj = new User(name, age);
+        Ticket ticket = new Ticket(title, obj);
+        list.add(ticket);
+        System.out.println("Ticket booked successfully");
+    }
+
+    public void displayTicket() {
+        if (list.isEmpty()) {
+            System.out.println("No tickets to display! Book one to get started! 😁😎");
+        } else {
+            for (Ticket t : list) {
+                System.out.println(t);
+            }
+        }
+    }
+}
+
+InvalidAgeException.javapackage exceptions;
+
+public class InvalidAgeException extends Exception {
+    public InvalidAgeException(String message) {
+        super(message);
+    }
+}
+
